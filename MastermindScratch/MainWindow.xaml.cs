@@ -35,22 +35,28 @@ namespace MastermindScratch
         {
             Ellipse colorEllipse = (Ellipse)sender;
             Brush ellipseColor = colorEllipse.Fill;
-            int[] position = Pins.GetCurrentPinPosition();
-            if (position != default(int[]))
-            {
-                Ellipse currentEllipse = Pins.pinsArray[position[0], position[1]];
-                currentEllipse.Fill = ellipseColor;
 
-                if (Pins.isRowCompleted(position[0]))
+            Pin currentPin = Pins.GetCurrentPin();
+            if (currentPin != default(Pin))
+            {
+                currentPin.Ellipse.Fill = ellipseColor;
+                currentPin.Filled = true;
+
+                if (Pins.isRowCompleted(currentPin.Row))
                 {
-                    int[] hits = Pins.CompareGuessAndCode(Pins.GetRow(position[0]), this.Code);
-                    Hints.DisplayHints(position[0], hits);
+                    int[] hits = Pins.CompareGuessAndCode(Pins.GetBrushRow(currentPin.Row), this.Code);
+                    Hints.DisplayHints(currentPin.Row, hits);
 
                     if (hits[0] == 4)
                     {
                         CodeToGuess.RevealCodeToGuess(this.Code);
+                        RaiseDialog(true);
                     }
                 }
+            }
+            else
+            {
+                RaiseDialog(false);
             }
         }
 
@@ -60,14 +66,11 @@ namespace MastermindScratch
             {
                 for (int j = 0; j < Constants.NumberOfPinsToGuess; j++)
                 {
-                    Ellipse pin = new Ellipse();
-                    pin.Style = (Style)this.FindResource("Pin");
-                    pin.Fill = Brushes.White;
-                    pin.MouseLeftButtonDown += new MouseButtonEventHandler(Revert_Color_MouseLeftButtonDown);
+                    Pin pin = new Pin(i, j, (Style)this.FindResource("Pin"), Revert_Color_MouseLeftButtonDown);
 
-                    theGrid.Children.Add(pin);
-                    Grid.SetRow(pin, Constants.RowOffset + Constants.NumberOfTrials - 1 - i);
-                    Grid.SetColumn(pin, Constants.ColumnOffset + j);
+                    theGrid.Children.Add(pin.Ellipse);
+                    Grid.SetRow(pin.Ellipse, Constants.RowOffset + Constants.NumberOfTrials - 1 - i);
+                    Grid.SetColumn(pin.Ellipse, Constants.ColumnOffset + j);
 
                     Pins.pinsArray[i, j] = pin;
                 }
@@ -144,9 +147,43 @@ namespace MastermindScratch
 
         private void Revert_Color_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Ellipse colorEllipse = (Ellipse)sender;
-            colorEllipse.Fill = Brushes.White;
+            Ellipse ellipseToRevert = (Ellipse)sender;
+            Pin pinToRevert = default(Pin);
+            foreach (Pin pin in Pins.pinsArray)
+            {
+                if (pin.Ellipse == ellipseToRevert)
+                {
+                    pinToRevert = pin;
+                    break;
+                }
+                else 
+                { pinToRevert = default(Pin); }
+
+            }
+            if (pinToRevert != default(Pin) && !Pins.isRowCompleted(pinToRevert.Row))
+            {
+                pinToRevert.Ellipse.Fill = Brushes.White;
+                pinToRevert.Filled = false;
+            }
 
         }
+
+        private void RaiseDialog(bool win)
+        {
+            string message = win ? "You revealed the code!" : "You lost.";
+
+            MessageBoxResult result = MessageBox.Show(message + "Do you like to play new game?", "End of Game", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    Code = CodeToGuess.GenerateCodeToGuess(Constants.NumberOfPinsToGuess);
+                    GenerateGameLayout();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+                
+            }
+        }
+
     }
 }

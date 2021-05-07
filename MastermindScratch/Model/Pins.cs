@@ -9,61 +9,56 @@ namespace MastermindScratch.Model
 {
     public class Pins
     {
-        public static Ellipse[,] pinsArray = new Ellipse[Constants.NumberOfTrials, Constants.NumberOfPinsToGuess];
+        public static Pin[,] pinsArray = new Pin[Constants.NumberOfTrials, Constants.NumberOfPinsToGuess];
 
-
-        public static Brush[] GetRow(int rowNumber)
+        public static Pin GetCurrentPin()
         {
-            Brush[] row = new Brush[pinsArray.GetLength(1)];
+            for (int i = 0; i < Constants.NumberOfTrials; i++)
+            {
+                for (int j = 0; j < Constants.NumberOfPinsToGuess; j++)
+                {
+                    Pin pin = pinsArray[i, j];
+                    if (!pin.Filled)
+                    {
+                        return pin;
+                    }
+                }
+            }
+            return default(Pin);
+        }
+
+        public static Pin[] GetRow(int rowNumber)
+        {
+            Pin[] row = new Pin[pinsArray.GetLength(1)];
             for (int i = 0; i < pinsArray.GetLength(1); i++)
             {
-                row[i] = pinsArray[rowNumber, i].Fill;
+                row[i] = pinsArray[rowNumber, i];
             }
             return row;
         }
 
-        //public static Brush[] GetBrushesRow(Ellipse[] row)
-        //{
-        //    Brush[] brushesRow = new Brush[row.Length];
-        //    for (int i = 0; i < row.Length; i++)
-        //    {
-        //        brushesRow[i] = row[i].Fill;
-        //    }
-        //    return brushesRow;
-        //}
-            
+        public static Brush[] GetBrushRow(int rowNumber)
+        {
+            Brush[] brushRow = new Brush[pinsArray.GetLength(1)];
+            for (int i = 0; i < pinsArray.GetLength(1); i++)
+            {
+                brushRow[i] = pinsArray[rowNumber, i].Ellipse.Fill;
+            }
+            return brushRow;
+
+        }
 
         public static bool isRowCompleted(int rowNumber)
         {
-            Brush[] row = GetRow(rowNumber);
-            foreach(Brush br in row)
+            Pin[] row = GetRow(rowNumber);
+            foreach(Pin pin in row)
             {
-                if (br == Brushes.White)
+                if (!pin.Filled)
                 {
                     return false;
                 }
             }
             return true;
-        }
-
-        public static int[] GetCurrentPinPosition()
-        {
-            int[] positions = new int[2];
-            for (int i = 0; i < pinsArray.GetLength(0); i++)
-            {
-                for (int j = 0; j < pinsArray.GetLength(1); j++)
-                {
-                    Ellipse el = pinsArray[i, j];
-                    if (el.Fill == Brushes.White)
-                    {
-                        positions[0] = i;
-                        positions[1] = j;
-                        return positions;
-                    }
-                }
-
-            }
-            return default(int[]);
         }
 
         public static int[] CompareGuessAndCode(Brush[] brushesRow, Brush[] code)

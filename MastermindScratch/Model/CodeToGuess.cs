@@ -1,16 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace MastermindScratch.Model
 {
-    public static class CodeToGuess
+    public class CodeToGuess
     {
-        public static readonly Brush[] BrushesArray = new Brush[6] { Brushes.Yellow, Brushes.RoyalBlue, Brushes.Red, Brushes.LightGreen, Brushes.Brown, Brushes.Orange };
+        public static readonly Brush[] AvailableBrushes = new Brush[6] { Brushes.Yellow, Brushes.RoyalBlue, Brushes.Red, Brushes.LightGreen, Brushes.Brown, Brushes.Orange };    
 
-        public static Ellipse[] codePinsArray = new Ellipse[Constants.NumberOfPinsToGuess];
+        public Brush[] Colors = new Brush[Constants.NumberOfPinsToGuess];
+
+        public CodeToGuess()
+        {
+            Colors = GenerateCodeToGuess(Constants.NumberOfPinsToGuess);
+        }
+
+        public CodeToGuess(Brush[] colors)
+        {
+            Colors = colors;
+        }
 
         public static Brush[] GenerateCodeToGuess(int numberOfPinsToGuess)
         {
@@ -19,16 +27,50 @@ namespace MastermindScratch.Model
             for (int i = 0; i < numberOfPinsToGuess; i++)
             {
                 int randomNumber = rnd.Next(1, 6);
-                codeArray[i] = BrushesArray[randomNumber];
+                codeArray[i] = AvailableBrushes[randomNumber];
             }
             return codeArray;
         }
 
-        public static void RevealCodeToGuess(Brush[] codeArray)
+
+        public void Reveal(Pin[] codePins)
         {
             for (int i = 0; i < Constants.NumberOfPinsToGuess; i++)
             {
-                codePinsArray[i].Fill = codeArray[i]; 
+                codePins[i].Ellipse.Fill = Colors[i]; 
+            }
+        }
+
+        public void Save(string filename)
+        {
+            using (StreamWriter swCode = new StreamWriter(filename))
+            {
+                for (int i = 0; i < Constants.NumberOfPinsToGuess; i++)
+                {
+                    string[] colorToSave = { Colors[i].ToString(), i.ToString() };
+                    string lineToSave = String.Join(";", colorToSave);
+                    swCode.WriteLine(lineToSave);
+                }
+            }
+
+        }
+
+        public static CodeToGuess Load(string filename)
+        {
+            using (StreamReader sr = new StreamReader(filename))
+            {
+                string line;
+                Brush[] colors = new Brush[Constants.NumberOfPinsToGuess];
+                while (((line = sr.ReadLine()) != null))
+                {
+                    string[] items = line.Split(';');
+                    int i = Convert.ToInt32(items[1]);
+                    var converter = new BrushConverter();
+                    Brush color = (Brush)converter.ConvertFromString(items[0]);
+                    colors[i] = color;
+                    
+                }
+                return new CodeToGuess(colors);
             }
         }
     }

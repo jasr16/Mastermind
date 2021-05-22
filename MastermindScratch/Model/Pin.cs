@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace MastermindScratch.Model
@@ -16,19 +10,16 @@ namespace MastermindScratch.Model
         public int Column { get; set; }
         public bool Filled { get; set; }
 
-        public Pin(int i, int j, Style style, MouseButtonEventHandler color_revert)
+        public Pin(int i, int j, Brush fill)
         {
-            Ellipse = new Ellipse();
-            Ellipse.Style = style;
-            Ellipse.Fill = Brushes.White;
-            Ellipse.MouseLeftButtonDown += color_revert;
+            Ellipse = new Ellipse()
+            {
+                Fill = fill
+            };                   
             Filled = false;
             Row = i;
             Column = j;
         }
-
-
-
 
     }
 }

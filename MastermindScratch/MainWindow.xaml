@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MastermindScratch"
         mc:Ignorable="d"
-        Title="Mastermind" Height="1080" Width="800">
+        Title="Mastermind" Height="1000" Width="700">
 
     <Window.Resources>
         <Style TargetType="Ellipse" x:Key="Pin">
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="50"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
             <Setter Property="Stroke" Value="Black"/>
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Margin" Value="10"/>
@@ -21,7 +21,7 @@
             <Setter Property="Width" Value="15"/>
             <Setter Property="Height" Value="15"/>
             <Setter Property="Stroke" Value="Black"/>
-            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -31,19 +31,19 @@
         <Grid x:Name="theGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="70"/>
 
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
 
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
 
                 <RowDefinition Height="*"/>
 
@@ -52,32 +52,24 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
 
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
 
-            <Menu x:Name="Menu" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8">
+            <Menu x:Name="Menu" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="10">
                 <MenuItem Header="Game">
                     <MenuItem Name="New_Game" Header="New Game" IsEnabled="True" Click="New_Game_Click"/>
-                    <MenuItem Name="Load_Game" Header="Load Game"/>
-                    <MenuItem Name="Save_Game" Header="Save Game"/>
-                </MenuItem>
-                <MenuItem Header="Settings">
-                    <MenuItem Header="New" Command="New"/>
+                    <MenuItem Name="Load_Game" Header="Load Game" Click="Load_Game_Click"/>
+                    <MenuItem Name="Save_Game" Header="Save Game" Click="Save_Game_Click"/>
                 </MenuItem>
             </Menu>
-            <!-->
-            <Ellipse Grid.Column="1" Grid.Row="1" Style="{StaticResource Pin}" Fill="LightGray"/>
-            <Ellipse Grid.Column="2" Grid.Row="1" Style="{StaticResource Pin}" Fill="LightGray"/>
-            <Ellipse Grid.Column="3" Grid.Row="1" Style="{StaticResource Pin}" Fill="LightGray"/>
-            <Ellipse Grid.Column="4" Grid.Row="1" Style="{StaticResource Pin}" Fill="LightGray"/>
-            <-->
 
             <Ellipse Grid.Column="1" Grid.Row="12" Style="{StaticResource Pin}" Fill="Yellow" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="2" Grid.Row="12" Style="{StaticResource Pin}" Fill="RoyalBlue" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
@@ -86,24 +78,6 @@
             <Ellipse Grid.Column="5" Grid.Row="12" Style="{StaticResource Pin}" Fill="Brown" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="6" Grid.Row="12" Style="{StaticResource Pin}" Fill="Orange" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
 
-            <!-->
-            <Ellipse Grid.Column="1" Grid.Row="11" Style="{StaticResource Pin}" Fill="White"/>
-            <Ellipse Grid.Column="2" Grid.Row="11" Style="{StaticResource Pin}" Fill="White"/>
-            <Ellipse Grid.Column="3" Grid.Row="11" Style="{StaticResource Pin}" Fill="White"/>
-            <Ellipse Grid.Column="4" Grid.Row="11" Style="{StaticResource Pin}" Fill="White"/>
-        
-            <StackPanel Grid.Row="11" Grid.Column="7" HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                <StackPanel Orientation="Vertical">
-                    <Ellipse Width="20" Height="20" Fill="Black" Stroke="Black" Margin="10" VerticalAlignment="Center"/>
-                    <Ellipse Width="20" Height="20" Fill="Gray" Stroke="Black" Margin="10" VerticalAlignment="Center" />
-                </StackPanel>
-                <StackPanel Orientation="Vertical">
-                    <Ellipse Width="20" Height="20" Fill="White" Stroke="Black" Margin="10" VerticalAlignment="Center" />
-                    <Ellipse Width="20" Height="20" Fill="White" Stroke="Black" Margin="10" VerticalAlignment="Center"/>
-                </StackPanel>
-           
-            </StackPanel>
-            <-->
 
         </Grid>
     </ScrollViewer>

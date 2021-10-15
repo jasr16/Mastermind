@@ -25,10 +25,23 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
+        <Menu x:Name="Menu" x:Key="Menu">
+            <MenuItem Header="Game">
+                <MenuItem Name="New_Game" Header="New Game" IsEnabled="True" Click="New_Game_Click"/>
+                <MenuItem Name="Load_Game" Header="Load Game" Click="Load_Game_Click"/>
+                <MenuItem Name="Save_Game" Header="Save Game" Click="Save_Game_Click"/>
+            </MenuItem>
+            <MenuItem Header="Settings">
+                <MenuItem Name="Settings" Header="Settings" IsEnabled="True" Click="Settings_Click"/>
+            </MenuItem>
+        </Menu>
+
     </Window.Resources>
 
-    <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
-        <Grid x:Name="theGrid">
+            <!-->
+        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+        
+            <Grid x:Name="theGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="70"/>
@@ -61,24 +74,21 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+        
 
+        
 
-            <Menu x:Name="Menu" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="10">
-                <MenuItem Header="Game">
-                    <MenuItem Name="New_Game" Header="New Game" IsEnabled="True" Click="New_Game_Click"/>
-                    <MenuItem Name="Load_Game" Header="Load Game" Click="Load_Game_Click"/>
-                    <MenuItem Name="Save_Game" Header="Save Game" Click="Save_Game_Click"/>
-                </MenuItem>
-            </Menu>
-
+        
             <Ellipse Grid.Column="1" Grid.Row="12" Style="{StaticResource Pin}" Fill="Yellow" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="2" Grid.Row="12" Style="{StaticResource Pin}" Fill="RoyalBlue" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="3" Grid.Row="12" Style="{StaticResource Pin}" Fill="Red" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="4" Grid.Row="12" Style="{StaticResource Pin}" Fill="LightGreen" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="5" Grid.Row="12" Style="{StaticResource Pin}" Fill="Brown" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
             <Ellipse Grid.Column="6" Grid.Row="12" Style="{StaticResource Pin}" Fill="Orange" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown"/>
-
-
+        
         </Grid>
+       
     </ScrollViewer>
+            <-->
+
 </Window>

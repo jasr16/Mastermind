@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MastermindScratch.Settings;
+using System;
 using System.IO;
 using System.Windows.Media;
 
@@ -6,7 +7,7 @@ namespace MastermindScratch.Model
 {
     public class HintPins
     {
-        public static Pin[,] Array = new Pin[Constants.NumberOfTrials, Constants.NumberOfPinsToGuess];
+        public static Pin[,] Array = new Pin[GameSettings.NumberOfTrials, GameSettings.NumberOfPinsToGuess];
 
         public static void DisplayHints(int rowNumber, Hits hits)
         {

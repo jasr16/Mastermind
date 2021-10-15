@@ -1,4 +1,5 @@
 ﻿using MastermindScratch.Model;
+using MastermindScratch.Settings;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
@@ -15,9 +16,14 @@ namespace MastermindScratch
     /// </summary>
     public partial class MainWindow : Window
     {
-        private CodeToGuess Code;
+        public CodeToGuess Code;
 
-        private bool PlayingAllowed;
+        public Grid DynamicGrid;
+
+        public Menu Menu;
+
+        public bool PlayingAllowed;
+
 
         public MainWindow()
         {
@@ -27,29 +33,104 @@ namespace MastermindScratch
 
         public void GenerateNewGame()
         {
+            GameSettings.Load();
             Code = new CodeToGuess();
             PlayingAllowed = true;
             GenerateGameLayout();
         }
+
         public void GenerateGameLayout()
         {
+            GenerateGrid();
+            GenerateMenu();
+            GenerateColorPins();
             GenerateGuessPins();
             GenerateHintPins();
             GenerateCodePins();
         }
 
+        public void GenerateGrid()
+        {
+            if (!(DynamicGrid == default(Grid)))
+            {
+                DynamicGrid.Children.Remove(Menu);
+            }
+
+            DynamicGrid = new Grid();
+
+            ColumnDefinition firstGridCol = new ColumnDefinition();
+            firstGridCol.Width = new GridLength(50);
+            DynamicGrid.ColumnDefinitions.Add(firstGridCol);
+
+            for (int i = 0; i < System.Math.Max(GameSettings.NumberOfColors, GameSettings.NumberOfPinsToGuess); i++)
+            {
+                ColumnDefinition gridCol = new ColumnDefinition();
+                gridCol.Width = new GridLength(70);
+                DynamicGrid.ColumnDefinitions.Add(gridCol);
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                ColumnDefinition gridCol = new ColumnDefinition();
+                DynamicGrid.ColumnDefinitions.Add(gridCol);
+            }
+
+            RowDefinition firstGridRow = new RowDefinition();
+            firstGridRow.Height = new GridLength(20);
+            DynamicGrid.RowDefinitions.Add(firstGridRow);
+
+            for (int i = 0; i < GameSettings.NumberOfTrials + 1; i++)
+            {
+                RowDefinition gridRow = new RowDefinition();
+                gridRow.Height = new GridLength(70);
+                DynamicGrid.RowDefinitions.Add(gridRow);
+            }
+            
+            RowDefinition lastGridRow = new RowDefinition();
+            DynamicGrid.RowDefinitions.Add(lastGridRow);
+
+            this.Content = DynamicGrid;
+        }
+
+        public void GenerateMenu()
+        {
+            Menu = (Menu)this.FindResource("Menu");
+            DynamicGrid.Children.Add(Menu);
+            Grid.SetRow(Menu, 0);
+            Grid.SetColumn(Menu, 0);
+            Grid.SetColumnSpan(Menu, DynamicGrid.ColumnDefinitions.Count);
+        }
+
+        public void GenerateColorPins()
+        {
+            for (int i = 0; i < GameSettings.NumberOfColors; i++)
+            {
+                Ellipse colorEllipse = new Ellipse()
+                {
+                    Style = (Style)this.FindResource("Pin"),
+                    Fill = CodeToGuess.AvailableBrushes[i],
+
+                };
+                colorEllipse.MouseLeftButtonDown += Ellipse_MouseLeftButtonDown;
+                DynamicGrid.Children.Add(colorEllipse);
+                Grid.SetRow(colorEllipse, GameSettings.NumberOfTrials + Constants.RowOffset);
+                Grid.SetColumn(colorEllipse, i + Constants.ColumnOffset);
+            }
+
+        }
+
         public void GenerateGuessPins()
         {
-            for (int i = 0; i < Constants.NumberOfTrials; i++)
+            for (int i = 0; i < GameSettings.NumberOfTrials; i++)
             {
-                for (int j = 0; j < Constants.NumberOfPinsToGuess; j++)
+                for (int j = 0; j < GameSettings.NumberOfPinsToGuess; j++)
                 {
                     Pin pin = new Pin(i, j, Brushes.White);
                     pin.Ellipse.Style = (Style)this.FindResource("Pin");
                     pin.Ellipse.MouseLeftButtonDown += Revert_Color_MouseLeftButtonDown;
 
-                    theGrid.Children.Add(pin.Ellipse);
-                    Grid.SetRow(pin.Ellipse, Constants.RowOffset + Constants.NumberOfTrials - 1 - i);
+                    DynamicGrid.Children.Add(pin.Ellipse);
+                    Grid.SetRow(pin.Ellipse, Constants.RowOffset + GameSettings.NumberOfTrials - 1 - i);
                     Grid.SetColumn(pin.Ellipse, Constants.ColumnOffset + j);
 
                     GuessPins.Array[i, j] = pin;
@@ -59,7 +140,7 @@ namespace MastermindScratch
 
         public void GenerateHintPins()
         {
-            for (int i = 0; i < Constants.NumberOfTrials; i++)
+            for (int i = 0; i < GameSettings.NumberOfTrials; i++)
             {
                 StackPanel hStack = new StackPanel()
                 {
@@ -89,21 +170,21 @@ namespace MastermindScratch
                     hStack.Children.Add(vStack);
                 }
 
-                theGrid.Children.Add(hStack);
-                Grid.SetRow(hStack, Constants.RowOffset + Constants.NumberOfTrials - 1 - i);
-                Grid.SetColumn(hStack, Constants.ColumnOffset + Constants.NumberOfColors);
+                DynamicGrid.Children.Add(hStack);
+                Grid.SetRow(hStack, Constants.RowOffset + GameSettings.NumberOfTrials - 1 - i);
+                Grid.SetColumn(hStack, Constants.ColumnOffset + System.Math.Max(GameSettings.NumberOfColors, GameSettings.NumberOfPinsToGuess));
             }
         }
 
         public void GenerateCodePins()
         {
 
-            for (int i = 0; i < Constants.NumberOfPinsToGuess; i++)
+            for (int i = 0; i < GameSettings.NumberOfPinsToGuess; i++)
             {
                 Pin codePin = new Pin(i, 0, Brushes.LightGray);
                 codePin.Ellipse.Style = (Style)this.FindResource("Pin"); ;                
 
-                theGrid.Children.Add(codePin.Ellipse);
+                DynamicGrid.Children.Add(codePin.Ellipse);
                 Grid.SetRow(codePin.Ellipse, Constants.RowOffset - 1);
                 Grid.SetColumn(codePin.Ellipse, Constants.ColumnOffset + i);
 
@@ -137,6 +218,7 @@ namespace MastermindScratch
 
         private void New_Game_Click(object sender, RoutedEventArgs e)
         {
+            
             GenerateNewGame();
         }
 
@@ -232,7 +314,7 @@ namespace MastermindScratch
                 string pinsFileName = System.IO.Path.Combine(path, "pins.csv");
                 GuessPins.LoadPins(pinsFileName);
 
-                int rowsToEvaulate = GuessPins.GetCurrentPin() == default(Pin) ? Constants.NumberOfTrials - 1 : GuessPins.GetCurrentPin().Row;
+                int rowsToEvaulate = GuessPins.GetCurrentPin() == default(Pin) ? GameSettings.NumberOfTrials - 1 : GuessPins.GetCurrentPin().Row;
 
                 for (int i = 0; i <= rowsToEvaulate; i++)
                 {
@@ -260,6 +342,12 @@ namespace MastermindScratch
             }
             
 
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.Show();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MastermindScratch.Settings;
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
@@ -7,13 +8,14 @@ namespace MastermindScratch.Model
 {
     public class GuessPins
     {
-        public static Pin[,] Array = new Pin[Constants.NumberOfTrials, Constants.NumberOfPinsToGuess];
+
+        public static Pin[,] Array = new Pin[GameSettings.NumberOfTrials, GameSettings.NumberOfPinsToGuess];
 
         public static Pin GetCurrentPin()
         {
-            for (int i = 0; i < Constants.NumberOfTrials; i++)
+            for (int i = 0; i < GameSettings.NumberOfTrials; i++)
             {
-                for (int j = 0; j < Constants.NumberOfPinsToGuess; j++)
+                for (int j = 0; j < GameSettings.NumberOfPinsToGuess; j++)
                 {
                     Pin pin = Array[i, j];
                     if (!pin.Filled)
@@ -95,12 +97,12 @@ namespace MastermindScratch.Model
                 Hits hits = CompareGuessAndCode(currentBrushRow, code.Colors);
                 HintPins.DisplayHints(rowNumber, hits);
 
-                if (hits.FullHits == 4)
+                if (hits.FullHits == GameSettings.NumberOfPinsToGuess)
                 {
                     code.Reveal(CodePins.Array);
                     stateOfGame = "win";
                 }
-                else if (rowNumber == Constants.NumberOfTrials - 1)
+                else if (rowNumber == GameSettings.NumberOfTrials - 1)
                 {
                     code.Reveal(CodePins.Array);
                     stateOfGame = "lost";

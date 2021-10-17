@@ -76,7 +76,7 @@ namespace Mastermind
                 DynamicGrid.ColumnDefinitions.Add(gridCol);
             }
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < System.Math.Ceiling((double)GameSettings.NumberOfPinsToGuess / 2); i++)
             {
                 ColumnDefinition gridCol = new ColumnDefinition();
                 DynamicGrid.ColumnDefinitions.Add(gridCol);
@@ -160,7 +160,7 @@ namespace Mastermind
                 };
                 
 
-                for (int j = 0; j < 2; j++)
+                for (int j = 0; j < System.Math.Ceiling((double)GameSettings.NumberOfPinsToGuess / 2); j++)
                 {
                     StackPanel vStack = new StackPanel()
                     {
@@ -169,13 +169,17 @@ namespace Mastermind
                     
                     for (int k = 0; k < 2; k++)
                     {
-                        Pin hintPin = new Pin(i, k + (j * 2), Brushes.White);
-                        hintPin.Ellipse.Style = (Style)this.FindResource("Hint");
-                                                
+                        if (k + (j * 2) < GameSettings.NumberOfPinsToGuess)
+                        {
+                            Pin hintPin = new Pin(i, k + (j * 2), Brushes.White);
+                            hintPin.Ellipse.Style = (Style)this.FindResource("Hint");
 
-                        vStack.Children.Add(hintPin.Ellipse);
 
-                        HintPins.Array[i, k + (j * 2)] = hintPin;
+                            vStack.Children.Add(hintPin.Ellipse);
+
+                            HintPins.Array[i, k + (j * 2)] = hintPin;
+                        }
+                        
                     }
 
                     hStack.Children.Add(vStack);

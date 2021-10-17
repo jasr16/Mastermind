@@ -5,15 +5,15 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace MastermindScratch.Settings
+namespace Mastermind.Settings
 {
     public class GameSettings : INotifyPropertyChanged
     {
-        public static int NumberOfTrials { get; set; }
+        public int NumberOfTrials { get; set; }
 
-        public static int NumberOfPinsToGuess {get; set;}
+        public int NumberOfPinsToGuess {get; set;}
 
-        public static int NumberOfColors { get; set; }
+        public int NumberOfColors { get; set; }
 
         // public bool ColorsRepetition { get; set; }
 
@@ -21,7 +21,19 @@ namespace MastermindScratch.Settings
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static void Save()
+        public GameSettings()
+        {
+            Load();
+        }
+
+        public GameSettings(int trials, int pinsToGuess, int colors)
+        {
+            NumberOfTrials = trials;
+            NumberOfPinsToGuess = pinsToGuess;
+            NumberOfColors = colors;
+        }
+
+        public void Save()
         {
 
             if (!Directory.Exists(Path.GetDirectoryName(Filename)))
@@ -37,7 +49,7 @@ namespace MastermindScratch.Settings
             }
         }
 
-        public static void Load()
+        public void Load()
         {
             if (File.Exists(Filename))
             {
@@ -53,7 +65,7 @@ namespace MastermindScratch.Settings
             {
                 NumberOfTrials = 10;
                 NumberOfPinsToGuess = 4;
-                NumberOfColors = 6;
+                NumberOfColors = 4;
             }
         }
 

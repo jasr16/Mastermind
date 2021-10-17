@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MastermindScratch.Model
+namespace Mastermind.Model
 {
     public class Constants
     {

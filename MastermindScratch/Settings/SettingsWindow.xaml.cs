@@ -1,4 +1,4 @@
-﻿using MastermindScratch;
+﻿using Mastermind;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MastermindScratch.Settings
+namespace Mastermind.Settings
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
@@ -26,10 +26,9 @@ namespace MastermindScratch.Settings
 
         private void ApplySettings_Click(object sender, RoutedEventArgs e)
         {
-            GameSettings.NumberOfTrials = (int)NumberofTrialsSlider.Value;
-            GameSettings.NumberOfPinsToGuess = (int)NumberOfPinsToGuessSlider.Value;
-            GameSettings.NumberOfColors = (int)NumberOfColorsSlider.Value;
-            GameSettings.Save();
+            GameSettings gameSettings = new GameSettings((int)NumberofTrialsSlider.Value,
+                (int)NumberOfPinsToGuessSlider.Value, (int)NumberOfColorsSlider.Value);
+            gameSettings.Save();
 
             foreach (Window window in Application.Current.Windows)
             {

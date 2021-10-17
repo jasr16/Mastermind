@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mastermind.Settings;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace MastermindScratch
+namespace Mastermind
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,33 +1,35 @@
-﻿using MastermindScratch.Settings;
+﻿using Mastermind.Settings;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media;
 
-namespace MastermindScratch.Model
+namespace Mastermind.Model
 {
     public class CodeToGuess
     {
-        public static readonly Brush[] AvailableBrushes = new Brush[6] { Brushes.Yellow, Brushes.RoyalBlue, Brushes.Red, Brushes.LightGreen, Brushes.Brown, Brushes.Orange };    
+        public static readonly Brush[] AvailableBrushes = new Brush[6] { Brushes.Yellow, Brushes.RoyalBlue, 
+            Brushes.Red, Brushes.LightGreen, Brushes.Brown, Brushes.Orange };    
 
-        public Brush[] Colors = new Brush[GameSettings.NumberOfPinsToGuess];
+        public Brush[] Colors;
 
-        public CodeToGuess()
+        public CodeToGuess(int pinsToGuess, int colors)
         {
-            Colors = GenerateCodeToGuess(GameSettings.NumberOfPinsToGuess, GameSettings.NumberOfColors);
+            Colors = GenerateCodeToGuess(pinsToGuess, colors);
         }
 
-        public CodeToGuess(Brush[] colors)
+        public CodeToGuess(Brush[] colorsArray)
         {
-            Colors = colors;
+            Colors = colorsArray;
         }
 
-        public static Brush[] GenerateCodeToGuess(int numberOfPinsToGuess, int numberOfColors)
+        public static Brush[] GenerateCodeToGuess(int pinsToGuess, int colors)
         {
-            Brush[] codeArray = new Brush[numberOfPinsToGuess];
+            Brush[] codeArray = new Brush[pinsToGuess];
             Random rnd = new Random();
-            for (int i = 0; i < numberOfPinsToGuess; i++)
+            for (int i = 0; i < pinsToGuess; i++)
             {
-                int randomNumber = rnd.Next(0, numberOfColors);
+                int randomNumber = rnd.Next(0, colors);
                 codeArray[i] = AvailableBrushes[randomNumber];
             }
             return codeArray;
@@ -36,7 +38,7 @@ namespace MastermindScratch.Model
 
         public void Reveal(Pin[] codePins)
         {
-            for (int i = 0; i < GameSettings.NumberOfPinsToGuess; i++)
+            for (int i = 0; i < Colors.Length; i++)
             {
                 codePins[i].Ellipse.Fill = Colors[i]; 
             }
@@ -46,7 +48,7 @@ namespace MastermindScratch.Model
         {
             using (StreamWriter swCode = new StreamWriter(filename))
             {
-                for (int i = 0; i < GameSettings.NumberOfPinsToGuess; i++)
+                for (int i = 0; i < Colors.Length; i++)
                 {
                     string[] colorToSave = { Colors[i].ToString(), i.ToString() };
                     string lineToSave = String.Join(";", colorToSave);
@@ -61,17 +63,15 @@ namespace MastermindScratch.Model
             using (StreamReader sr = new StreamReader(filename))
             {
                 string line;
-                Brush[] colors = new Brush[GameSettings.NumberOfPinsToGuess];
+                List<Brush> colors = new List<Brush>(); // Brush[Colors.Length];
                 while (((line = sr.ReadLine()) != null))
                 {
                     string[] items = line.Split(';');
-                    int i = Convert.ToInt32(items[1]);
                     var converter = new BrushConverter();
                     Brush color = (Brush)converter.ConvertFromString(items[0]);
-                    colors[i] = color;
-                    
+                    colors.Add(color);                   
                 }
-                return new CodeToGuess(colors);
+                return new CodeToGuess(colors.ToArray());
             }
         }
     }

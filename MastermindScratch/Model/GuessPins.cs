@@ -1,21 +1,25 @@
-﻿using MastermindScratch.Settings;
+﻿using Mastermind.Settings;
 using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
 
-namespace MastermindScratch.Model
+namespace Mastermind.Model
 {
     public class GuessPins
     {
 
-        public static Pin[,] Array = new Pin[GameSettings.NumberOfTrials, GameSettings.NumberOfPinsToGuess];
+        public Pin[,] Array;
 
-        public static Pin GetCurrentPin()
+        public GuessPins(int trials, int pinsToGuess)
         {
-            for (int i = 0; i < GameSettings.NumberOfTrials; i++)
+            Array = new Pin[trials, pinsToGuess];
+        }
+        public Pin GetCurrentPin()
+        {
+            for (int i = 0; i < Array.GetLength(0); i++)
             {
-                for (int j = 0; j < GameSettings.NumberOfPinsToGuess; j++)
+                for (int j = 0; j < Array.GetLength(1); j++)
                 {
                     Pin pin = Array[i, j];
                     if (!pin.Filled)
@@ -27,7 +31,7 @@ namespace MastermindScratch.Model
             return default;
         }
 
-        public static Pin[] GetRow(int rowNumber)
+        public Pin[] GetRow(int rowNumber)
         {
             Pin[] row = new Pin[Array.GetLength(1)];
             for (int i = 0; i < Array.GetLength(1); i++)
@@ -37,7 +41,7 @@ namespace MastermindScratch.Model
             return row;
         }
 
-        public static Brush[] GetBrushRow(int rowNumber)
+        public Brush[] GetBrushRow(int rowNumber)
         {
             Pin[] row = GetRow(rowNumber);
             Brush[]  brushRow = row.Select(x => x.Ellipse.Fill).ToArray();
@@ -45,7 +49,7 @@ namespace MastermindScratch.Model
 
         }
 
-        public static bool IsRowCompleted(int rowNumber)
+        public bool IsRowCompleted(int rowNumber)
         {
             Pin[] row = GetRow(rowNumber);
             foreach (Pin pin in row)
@@ -87,7 +91,7 @@ namespace MastermindScratch.Model
             return new Hits(fullHits, colorHits);
         }
 
-        public static string EvaluateRow(int rowNumber, CodeToGuess code)
+        public string EvaluateRow(int rowNumber, CodeToGuess code, HintPins hintPins, CodePins codePins)
         {
             string stateOfGame = "";
 
@@ -95,16 +99,16 @@ namespace MastermindScratch.Model
             {
                 Brush[] currentBrushRow = GetBrushRow(rowNumber);
                 Hits hits = CompareGuessAndCode(currentBrushRow, code.Colors);
-                HintPins.DisplayHints(rowNumber, hits);
+                hintPins.DisplayHints(rowNumber, hits);
 
-                if (hits.FullHits == GameSettings.NumberOfPinsToGuess)
+                if (hits.FullHits == Array.GetLength(1))
                 {
-                    code.Reveal(CodePins.Array);
+                    code.Reveal(codePins.Array);
                     stateOfGame = "win";
                 }
-                else if (rowNumber == GameSettings.NumberOfTrials - 1)
+                else if (rowNumber == Array.GetLength(0) - 1)
                 {
-                    code.Reveal(CodePins.Array);
+                    code.Reveal(codePins.Array);
                     stateOfGame = "lost";
                 }
             }
@@ -112,7 +116,7 @@ namespace MastermindScratch.Model
 
         }
 
-        public static void SavePins(string filename)
+        public void SavePins(string filename)
         {
             using (StreamWriter swPins = new StreamWriter(filename))
             {
@@ -126,7 +130,7 @@ namespace MastermindScratch.Model
 
         }
 
-        public static void LoadPins(string filename)
+        public void LoadPins(string filename)
         {
             using (StreamReader sr = new StreamReader(filename))
             {

@@ -1,9 +1,14 @@
-﻿using MastermindScratch.Settings;
+﻿using Mastermind.Settings;
 
-namespace MastermindScratch.Model
+namespace Mastermind.Model
 {
     public class CodePins
     {
-        public static Pin[] Array = new Pin[GameSettings.NumberOfPinsToGuess];
+        public Pin[] Array;
+
+        public CodePins(int pinsToGuess)
+        {
+            Array = new Pin[pinsToGuess]; 
+        }
     }
 }

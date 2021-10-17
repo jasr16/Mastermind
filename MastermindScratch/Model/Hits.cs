@@ -1,4 +1,4 @@
-﻿namespace MastermindScratch.Model
+﻿namespace Mastermind.Model
 {
     public class Hits
     {

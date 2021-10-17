@@ -1,5 +1,5 @@
-﻿using MastermindScratch.Model;
-using MastermindScratch.Settings;
+﻿using Mastermind.Model;
+using Mastermind.Settings;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace MastermindScratch
+namespace Mastermind
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,6 +24,13 @@ namespace MastermindScratch
 
         public bool PlayingAllowed;
 
+        public GameSettings GameSettings;
+
+        public GuessPins GuessPins;
+
+        public HintPins HintPins;
+
+        public CodePins CodePins;
 
         public MainWindow()
         {
@@ -33,8 +40,8 @@ namespace MastermindScratch
 
         public void GenerateNewGame()
         {
-            GameSettings.Load();
-            Code = new CodeToGuess();
+            GameSettings = new GameSettings();
+            Code = new CodeToGuess(GameSettings.NumberOfPinsToGuess, GameSettings.NumberOfColors);
             PlayingAllowed = true;
             GenerateGameLayout();
         }
@@ -121,6 +128,8 @@ namespace MastermindScratch
 
         public void GenerateGuessPins()
         {
+            GuessPins = new GuessPins(GameSettings.NumberOfTrials, GameSettings.NumberOfPinsToGuess);
+
             for (int i = 0; i < GameSettings.NumberOfTrials; i++)
             {
                 for (int j = 0; j < GameSettings.NumberOfPinsToGuess; j++)
@@ -140,6 +149,8 @@ namespace MastermindScratch
 
         public void GenerateHintPins()
         {
+            HintPins = new HintPins(GameSettings.NumberOfTrials, GameSettings.NumberOfPinsToGuess);
+
             for (int i = 0; i < GameSettings.NumberOfTrials; i++)
             {
                 StackPanel hStack = new StackPanel()
@@ -178,6 +189,7 @@ namespace MastermindScratch
 
         public void GenerateCodePins()
         {
+            CodePins = new CodePins(GameSettings.NumberOfPinsToGuess);
 
             for (int i = 0; i < GameSettings.NumberOfPinsToGuess; i++)
             {
@@ -206,7 +218,7 @@ namespace MastermindScratch
                     currentPin.Ellipse.Fill = ellipseColor;
                     currentPin.Filled = true;
 
-                    string stateOfGame = GuessPins.EvaluateRow(currentPin.Row, Code);
+                    string stateOfGame = GuessPins.EvaluateRow(currentPin.Row, Code, HintPins, CodePins);
 
                     EndGameDialog(stateOfGame);
                    
@@ -318,7 +330,7 @@ namespace MastermindScratch
 
                 for (int i = 0; i <= rowsToEvaulate; i++)
                 {
-                    string stateOfGame = GuessPins.EvaluateRow(i, Code);
+                    string stateOfGame = GuessPins.EvaluateRow(i, Code, HintPins, CodePins);
                     EndGameDialog(stateOfGame);
                 }
             }
